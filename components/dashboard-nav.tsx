@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useState } from "react"
 import { useAuth } from "./auth-provider"
 import { logout } from "@/app/actions/auth"
+import { UserAvatar } from "@/components/user-avatar"
 
 export default function DashboardNav() {
   const pathname = usePathname()
@@ -63,14 +64,7 @@ export default function DashboardNav() {
             </div>
             <div className="flex flex-col flex-1 p-6">
               <div className="flex items-center gap-3 mb-8">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                  <Image
-                    src="/placeholder.svg?height=100&width=100"
-                    alt={user?.name || "User"}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                {user && <UserAvatar user={user} size="sm" />}
                 <div>
                   <p className="font-medium">{user?.name || "User"}</p>
                   <p className="text-xs text-muted-foreground">{user?.role || "User"}</p>
@@ -121,14 +115,7 @@ export default function DashboardNav() {
 
         <div className="flex flex-col flex-1 p-6">
           <div className="flex items-center gap-3 mb-8">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden">
-              <Image
-                src="/placeholder.svg?height=100&width=100"
-                alt={user?.name || "User"}
-                fill
-                className="object-cover"
-              />
-            </div>
+            {user && <UserAvatar user={user} size="sm" />}
             <div>
               <p className="font-medium">{user?.name || "User"}</p>
               <p className="text-xs text-muted-foreground">{user?.role || "User"}</p>

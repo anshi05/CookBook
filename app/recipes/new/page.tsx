@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, Plus } from "lucide-react"
 import { createRecipe } from "@/app/actions/recipes"
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from "@/components/auth-provider"
 
 type Ingredient = {
@@ -24,6 +24,26 @@ export default function NewRecipePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { user, isLoading } = useAuth()
+  const { toast } = useToast() // Add this line to access the toast function
+
+  const [title, setTitle] = useState("");
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const [cookTime, setCookTime] = useState("")
+
+  const handleCookTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCookTime(e.target.value)
+  }
+
+  const [prepTime, setPrepTime] = useState("")
+
+  const handlePrepTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrepTime(e.target.value)
+  }
+  
 
   // Redirect if not logged in
   if (!isLoading && !user) {
@@ -48,39 +68,42 @@ export default function NewRecipePage() {
     setIngredients(newIngredients)
   }
 
-  async function handleSubmit(formData: FormData) {
-    setIsSubmitting(true)
-
-    // Add ingredients to form data
-    formData.append("ingredients", JSON.stringify(ingredients))
-
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault(); // Prevent page reload
+    setIsSubmitting(true);
+  
+    const formData = new FormData(e.currentTarget); // Get form data from the form
+    formData.append("ingredients", JSON.stringify(ingredients));
+  
     try {
-      const result = await createRecipe(formData)
-
+      const result = await createRecipe(formData);
+  
       if (result.success) {
         toast({
           title: "Success",
           description: result.message,
-        })
-        router.push(`/recipes/${result.recipeId}`)
+        });
+        router.push(`/recipes/${result.recipeId}`);
       } else {
         toast({
           title: "Error",
           description: result.message,
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
+      console.error("Submission Error:", error) // 👈 Add this
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
-
+  
+  
   return (
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">Create New Recipe</h1>
@@ -91,18 +114,20 @@ export default function NewRecipePage() {
           <CardDescription>Share your culinary creation with the community</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit} className="space-y-6">
+        <form onSubmit={handleFormSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Recipe Title</Label>
                   <Input
-                    id="title"
-                    name="title"
-                    placeholder="e.g., Creamy Garlic Parmesan Pasta"
-                    className="bg-background/50"
-                    required
-                  />
+                      id="title"
+                      name="title"
+                      placeholder="e.g., Creamy Garlic Parmesan Pasta"
+                      className="bg-background/50"
+                      required
+                      value={title}  // Controlled input value
+                      onChange={handleTitleChange}  // Handle changes to the input
+                    />
                 </div>
 
                 <div className="space-y-2">
@@ -139,12 +164,24 @@ export default function NewRecipePage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="prepTime">Prep Time (minutes)</Label>
-                  <Input id="prepTime" name="prepTime" type="number" min="1" className="bg-background/50" required />
+                  <Input id="prepTime" name="prepTime" type="number" min="1" className="bg-background/50" 
+                  value={prepTime}  // Controlled input
+                  onChange={handlePrepTimeChange}  // Handle input changes
+                  required />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="cookTime">Cook Time (minutes)</Label>
-                  <Input id="cookTime" name="cookTime" type="number" min="1" className="bg-background/50" required />
+                  <Input
+                    id="cookTime"
+                    name="cookTime"
+                    type="number"
+                    min="1"
+                    className="bg-background/50"
+                    value={cookTime}  // Controlled input
+                    onChange={handleCookTimeChange}  // Handle input changes
+                    required
+                  />                
                 </div>
               </div>
 
@@ -181,8 +218,8 @@ export default function NewRecipePage() {
                         <Input
                           id={`quantity-${index}`}
                           type="number"
-                          min="0.1"
-                          step="0.1"
+                          min="1"
+                          step="1"
                           value={ingredient.quantity}
                           onChange={(e) => updateIngredient(index, "quantity", Number.parseFloat(e.target.value))}
                           className="bg-background/50"

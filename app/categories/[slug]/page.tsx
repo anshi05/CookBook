@@ -22,12 +22,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const page = typeof searchParams.page === "string" ? Number.parseInt(searchParams.page) : 1
   const limit = 12
 
+  // Use lowercase filter for case-insensitive search
+  const categoryFilter = categoryName.toLowerCase()
+
   // Get recipes for this category/cuisine
   const recipes = await prisma.recipe.findMany({
     where: {
       cuisine: {
-        equals: categoryName,
-        mode: "insensitive",
+        contains: categoryFilter,
       },
     },
     include: {
@@ -54,8 +56,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const totalRecipes = await prisma.recipe.count({
     where: {
       cuisine: {
-        equals: categoryName,
-        mode: "insensitive",
+        contains: categoryFilter,
       },
     },
   })

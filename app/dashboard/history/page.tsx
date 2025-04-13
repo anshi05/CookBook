@@ -50,7 +50,7 @@ export default async function HistoryPage() {
                   >
                     <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                       <Image
-                        src="/placeholder.svg?height=80&width=80"
+                        src="/food.jpg?height=80&width=80"
                         alt={recipe.title}
                         fill
                         className="object-cover"

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { prisma } from "@/lib/db"
 import RecipeCard from "@/components/recipe-card"
 import { formatDate } from "@/lib/utils"
+import { UserAvatar } from "@/components/user-avatar"
 
 export default async function ProfilePage({ params }: { params: { id: string } }) {
   const userId = Number.parseInt(params.id)
@@ -84,9 +85,9 @@ export default async function ProfilePage({ params }: { params: { id: string } }
             <Card className="bg-background/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center">
-                  <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4">
-                    <Image src="/placeholder.svg?height=200&width=200" alt={user.name} fill className="object-cover" />
-                  </div>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-8 w-8 m-12">
+                      <UserAvatar user={user} size="lg" />
+                   </Button>
                   <h1 className="text-2xl font-bold">{user.name}</h1>
                   <p className="text-primary text-sm mb-4">{user.role}</p>
                   <p className="text-sm text-muted-foreground mb-6">Member since {formatDate(user.createdAt)}</p>

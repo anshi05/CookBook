@@ -43,7 +43,7 @@ export default async function Home() {
       <section className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/placeholder.svg?height=1080&width=1920"
+            src="/hero.webp"
             alt="Delicious food"
             fill
             className="object-cover blur-[2px] brightness-[0.4]"

@@ -103,7 +103,7 @@ export default function NotificationsPage({
                   >
                     <div className="flex gap-4">
                       <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                        <Image src="/placeholder.svg?height=100&width=100" alt="" fill className="object-cover" />
+                        <Image src="/food.jpg?height=100&width=100" alt="" fill className="object-cover" />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm">{notification.message}</p>

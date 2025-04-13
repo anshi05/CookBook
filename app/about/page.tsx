@@ -9,7 +9,7 @@ export default function AboutPage() {
         <h1 className="text-4xl font-bold mb-6">About CookBook</h1>
 
         <div className="relative w-full h-64 rounded-lg overflow-hidden mb-8">
-          <Image src="/placeholder.svg?height=400&width=1200" alt="Cooking together" fill className="object-cover" />
+          <Image src="/food.jpg?height=400&width=1200" alt="Cooking together" fill className="object-cover" />
         </div>
 
         <div className="prose prose-invert max-w-none mb-12">
@@ -59,7 +59,7 @@ export default function AboutPage() {
             <Card key={index} className="bg-background/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <div className="relative w-24 h-24 rounded-full overflow-hidden mb-4">
-                  <Image src={member.avatar || "/placeholder.svg"} alt={member.name} fill className="object-cover" />
+                  <Image src={member.avatar || "/food.jpg"} alt={member.name} fill className="object-cover" />
                 </div>
                 <h3 className="text-lg font-semibold">{member.name}</h3>
                 <p className="text-primary text-sm mb-2">{member.role}</p>
@@ -101,18 +101,18 @@ const team = [
     name: "Alex Johnson",
     role: "Founder & Head Chef",
     bio: "Professional chef with 15 years of experience in top restaurants around the world.",
-    avatar: "/placeholder.svg?height=200&width=200",
+    avatar: "/food.jpg?height=200&width=200",
   },
   {
     name: "Maria Rodriguez",
     role: "Recipe Developer",
     bio: "Culinary school graduate specializing in fusion cuisine and innovative cooking techniques.",
-    avatar: "/placeholder.svg?height=200&width=200",
+    avatar: "/food.jpg?height=200&width=200",
   },
   {
     name: "David Chen",
     role: "Community Manager",
     bio: "Food blogger and social media expert passionate about building culinary communities.",
-    avatar: "/placeholder.svg?height=200&width=200",
+    avatar: "/food.jpg?height=200&width=200",
   },
 ]

@@ -98,7 +98,7 @@ export default async function DashboardPage() {
                   >
                     <div className="relative h-48 w-full">
                       <Image
-                        src="/placeholder.svg?height=400&width=600"
+                        src="/food.jpg?height=400&width=600"
                         alt={recipe.title}
                         fill
                         className="object-cover"
@@ -165,7 +165,7 @@ export default async function DashboardPage() {
                     <Card className="overflow-hidden h-full border-border/50 bg-background/50 backdrop-blur-sm hover:shadow-md transition-all group">
                       <div className="relative h-48 w-full">
                         <Image
-                          src="/placeholder.svg?height=400&width=600"
+                          src="/food.jpg?height=400&width=600"
                           alt={recipe.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -224,7 +224,7 @@ export default async function DashboardPage() {
                       >
                         <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                           <Image
-                            src="/placeholder.svg?height=80&width=80"
+                            src="/food.jpg?height=80&width=80"
                             alt={item.title}
                             fill
                             className="object-cover"
@@ -265,7 +265,7 @@ export default async function DashboardPage() {
                         >
                           <div className="flex gap-4">
                             <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                              <Image src="/placeholder.svg?height=100&width=100" alt="" fill className="object-cover" />
+                              <Image src="/food.jpg?height=100&width=100" alt="" fill className="object-cover" />
                             </div>
                             <div>
                               <p className="text-sm">{notification.message}</p>

@@ -42,7 +42,7 @@ export default async function SavedRecipesPage() {
                 <div className="relative h-48 w-full">
                   <Link href={`/recipes/${recipe.id}`}>
                     <Image
-                      src="/placeholder.svg?height=400&width=600"
+                      src="/food.jpg?height=400&width=600"
                       alt={recipe.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"

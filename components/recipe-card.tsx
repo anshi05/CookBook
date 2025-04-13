@@ -22,7 +22,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       <Card className="overflow-hidden group h-full border-border/50 bg-background/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:border-primary/50 hover:shadow-primary/5">
         <div className="relative h-48 w-full overflow-hidden">
           <Image
-            src="/placeholder.svg?height=400&width=600"
+            src="/food.jpg?height=400&width=600"
             alt={recipe.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

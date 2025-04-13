@@ -1,5 +1,5 @@
 "use client"
-
+import { use } from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, Plus, Loader2 } from "lucide-react"
 import { updateRecipe } from "@/app/actions/recipes"
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from "@/components/auth-provider"
 
 type Ingredient = {
@@ -19,14 +19,33 @@ type Ingredient = {
   unit: string
 }
 
-export default function EditRecipePage({ params }: { params: { id: string } }) {
-  const recipeId = Number.parseInt(params.id)
+type RecipeFormData = {
+  title: string
+  description: string
+  cuisine: string
+  prepTime: number
+  cookTime: number
+  instructions: string
+}
+
+export default function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const recipeId = Number.parseInt(id)
   const [recipe, setRecipe] = useState<any>(null)
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
+  const { toast } = useToast()
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    cuisine: "",
+    prepTime: 0,
+    cookTime: 0,
+    instructions: ""
+  })
 
   // Fetch recipe data
   useEffect(() => {
@@ -39,19 +58,15 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
         const data = await response.json()
         setRecipe(data)
 
-        // Set ingredients from recipe
-        if (data.recipeIngredients && data.recipeIngredients.length > 0) {
-          setIngredients(
-            data.recipeIngredients.map((item: any) => ({
-              name: item.ingredient.name,
-              quantity: item.quantity,
-              unit: item.unit,
-            })),
-          )
-        } else {
-          setIngredients([{ name: "", quantity: 1, unit: "g" }])
-        }
-
+        // Set form data from recipe
+        setFormData({
+          title: data.title || "",
+          description: data.description || "",
+          cuisine: data.cuisine || "",
+          prepTime: data.prepTime || 0,
+          cookTime: data.cookTime || 0,
+          instructions: data.instructions || ""
+        })
         setIsLoading(false)
       } catch (error) {
         toast({
@@ -64,7 +79,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     }
 
     fetchRecipe()
-  }, [recipeId, router])
+  }, [recipeId, router, toast])
 
   // Redirect if not logged in
   useEffect(() => {
@@ -73,14 +88,17 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     }
   }, [user, authLoading, router])
 
+  // Add ingredient input
   const addIngredient = () => {
     setIngredients([...ingredients, { name: "", quantity: 1, unit: "g" }])
   }
 
+  // Remove ingredient input
   const removeIngredient = (index: number) => {
     setIngredients(ingredients.filter((_, i) => i !== index))
   }
 
+  // Update ingredient field
   const updateIngredient = (index: number, field: keyof Ingredient, value: string | number) => {
     const newIngredients = [...ingredients]
     newIngredients[index] = {
@@ -90,39 +108,63 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
     setIngredients(newIngredients)
   }
 
-  async function handleSubmit(formData: FormData) {
+  // Handle form field changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  // Handle number field changes
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === "prepTime" || name === "cookTime" ? parseInt(value) || 0 : value    }))
+  }
+
+  // Handle select changes
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setIsSubmitting(true)
 
-    // Add ingredients to form data
-    formData.append("ingredients", JSON.stringify(ingredients))
-
     try {
-      const result = await updateRecipe(recipeId, formData)
+      const response = await fetch(`/api/recipes/${recipeId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
 
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: result.message,
-        })
-        router.push(`/recipes/${recipeId}`)
-      } else {
-        toast({
-          title: "Error",
-          description: result.message,
-          variant: "destructive",
-        })
-      }
+      if (!response.ok) throw new Error("Failed to update recipe")
+
+      toast({
+        title: "Success",
+        description: "Recipe updated successfully",
+      })
+      router.push(`/recipes/${recipeId}`)
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Failed to update recipe",
         variant: "destructive",
       })
     } finally {
       setIsSubmitting(false)
     }
   }
-
+  
   if (isLoading) {
     return (
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
@@ -144,7 +186,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
           <CardDescription>Update your recipe information</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
@@ -154,8 +196,9 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                     name="title"
                     placeholder="e.g., Creamy Garlic Parmesan Pasta"
                     className="bg-background/50"
-                    defaultValue={recipe.title}
                     required
+                    value={formData.title}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -166,7 +209,8 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                     name="description"
                     placeholder="Briefly describe your recipe..."
                     className="bg-background/50 min-h-[100px]"
-                    defaultValue={recipe.description}
+                    value={formData.description}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -175,7 +219,10 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="cuisine">Cuisine</Label>
-                  <Select name="cuisine" defaultValue={recipe.cuisine || ""}>
+                  <Select 
+                    value={formData.cuisine}
+                    onValueChange={(value) => handleSelectChange("cuisine", value)}
+                  >
                     <SelectTrigger className="bg-background/50">
                       <SelectValue placeholder="Select cuisine" />
                     </SelectTrigger>
@@ -200,7 +247,8 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                     type="number"
                     min="1"
                     className="bg-background/50"
-                    defaultValue={recipe.prepTime}
+                    value={formData.prepTime}
+                    onChange={handleNumberChange}
                     required
                   />
                 </div>
@@ -213,7 +261,8 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                     type="number"
                     min="1"
                     className="bg-background/50"
-                    defaultValue={recipe.cookTime}
+                    value={formData.cookTime}
+                    onChange={handleNumberChange}
                     required
                   />
                 </div>
@@ -255,7 +304,7 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                           min="0.1"
                           step="0.1"
                           value={ingredient.quantity}
-                          onChange={(e) => updateIngredient(index, "quantity", Number.parseFloat(e.target.value))}
+                          onChange={(e) => updateIngredient(index, "quantity", Math.max(0.1, Number.parseFloat(e.target.value)))}
                           className="bg-background/50"
                           required
                         />
@@ -286,7 +335,6 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeIngredient(index)}
-                        disabled={ingredients.length === 1}
                         className="mb-2"
                       >
                         <X className="h-4 w-4" />
@@ -303,7 +351,8 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
                   name="instructions"
                   placeholder="Step-by-step instructions for your recipe..."
                   className="bg-background/50 min-h-[200px]"
-                  defaultValue={recipe.instructions}
+                  value={formData.instructions}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -313,8 +362,15 @@ export default function EditRecipePage({ params }: { params: { id: string } }) {
               <Button type="button" variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
-                {isSubmitting ? "Saving..." : "Save Changes"}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </Button>
             </div>
           </form>

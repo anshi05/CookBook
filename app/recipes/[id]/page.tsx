@@ -13,6 +13,7 @@ import RatingForm from "@/components/rating-form"
 import { getCurrentUser } from "@/lib/auth"
 import SaveRecipeButton from "@/components/save-recipe-button"
 import { isRecipeSaved } from "@/app/actions/saved-recipes"
+import { UserAvatar } from "@/components/user-avatar"
 
 export default async function RecipeDetailPage({ params }: { params: { id: string } }) {
   const recipeId = Number.parseInt(params.id)
@@ -34,7 +35,7 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
       {/* Hero Image */}
       <div className="relative h-[40vh] md:h-[50vh] w-full">
         <Image
-          src="/placeholder.svg?height=800&width=1200"
+          src="/food.jpg?height=800&width=1200"
           alt={recipe.title}
           fill
           className="object-cover brightness-[0.7]"
@@ -157,13 +158,7 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
                         recipe.ratings.map((review) => (
                           <div key={review.id} className="border-b border-border/50 pb-6 last:border-0">
                             <div className="flex items-center gap-3 mb-3">
-                              <Image
-                                src="/placeholder.svg?height=40&width=40"
-                                alt={review.user.name}
-                                width={40}
-                                height={40}
-                                className="rounded-full"
-                              />
+                            <UserAvatar user={review.user} size="sm" />
                               <div>
                                 <p className="font-medium">{review.user.name}</p>
                                 <div className="flex items-center gap-2">
@@ -225,13 +220,7 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               <div className="p-6">
                 <h3 className="text-lg font-semibold mb-4">About the Chef</h3>
                 <div className="flex items-center gap-3 mb-4">
-                  <Image
-                    src="/placeholder.svg?height=50&width=50"
-                    alt={recipe.user.name}
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
+                  <UserAvatar user={recipe.user} />
                   <div>
                     <p className="font-medium">{recipe.user.name}</p>
                     <p className="text-sm text-muted-foreground">Recipe Creator</p>
@@ -254,7 +243,7 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
                     <Link href={`/recipes/${id}`} key={id} className="flex gap-3 group">
                       <div className="relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden">
                         <Image
-                          src="/placeholder.svg?height=80&width=80"
+                          src="/food.jpg?height=80&width=80"
                           alt="Related recipe"
                           fill
                           className="object-cover group-hover:scale-105 transition-transform"
