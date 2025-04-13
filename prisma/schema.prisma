@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int            @id @default(autoincrement()) @map("UserID")
+  name         String
+  email        String         @unique
+  password     String
+  role         String         @default("User") // Admin/User/Guest
+  recipes      Recipe[]
+  ratings      Rating[]
+  savedRecipes SavedRecipe[]
+  notifications Notification[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("Users")
+}
+
+model Recipe {
+  id                Int                 @id @default(autoincrement()) @map("RecipeID")
+  title             String
+  description       String              @db.Text
+  cuisine           String?
+  prepTime          Int
+  cookTime          Int
+  userId            Int                 @map("UserID")
+  user              User                @relation(fields: [userId], references: [id])
+  recipeIngredients RecipeIngredient[]
+  ratings           Rating[]
+  savedBy           SavedRecipe[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  instructions      String              @db.Text
+
+  @@map("Recipes")
+}
+
+model SavedRecipe {
+  userId    Int      @map("UserID")
+  recipeId  Int      @map("RecipeID")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])
+  @@map("SavedRecipes")
+}
+
+model Ingredient {
+  id                Int                 @id @default(autoincrement()) @map("IngredientID")
+  name              String
+  category          String?
+  supplierId        Int?                @map("SupplierID")
+  supplier          Supplier?           @relation(fields: [supplierId], references: [id])
+  recipeIngredients RecipeIngredient[]
+
+  @@map("Ingredients")
+}
+
+model RecipeIngredient {
+  recipeId     Int        @map("RecipeID")
+  ingredientId Int        @map("IngredientID")
+  quantity     Float
+  unit         String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@id([recipeId, ingredientId])
+  @@map("Recipe_Ingredients")
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement()) @map("RatingID")
+  recipeId  Int      @map("RecipeID")
+  userId    Int      @map("UserID")
+  rating    Int
+  comment   String?  @db.Text
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@map("Ratings")
+}
+
+model Category {
+  id           Int      @id @default(autoincrement()) @map("CategoryID")
+  categoryName String   @unique
+  createdAt    DateTime @default(now())
+
+  @@map("Categories")
+}
+
+model Supplier {
+  id           Int          @id @default(autoincrement()) @map("SupplierID")
+  supplierName String       @unique
+  contactInfo  String?
+  ingredients  Ingredient[]
+  createdAt    DateTime     @default(now())
+
+  @@map("Suppliers")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement()) @map("NotificationID")
+  userId    Int      @map("UserID")
+  message   String
+  sentTime  DateTime @default(now())
+  isRead    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("Notifications")
+}
