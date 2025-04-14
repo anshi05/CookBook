@@ -24,7 +24,7 @@ export default function NewRecipePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { user, isLoading } = useAuth()
-  const { toast } = useToast() // Add this line to access the toast function
+  const { toast } = useToast() // <- ✅ ADD THIS LINE
 
   const [title, setTitle] = useState("");
 

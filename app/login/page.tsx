@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const { toast } = useToast() // <- ✅ ADD THIS LINE
 
   // Update the handleLogin function to include more detailed error handling and logging
   async function handleLogin(formData: FormData) {
