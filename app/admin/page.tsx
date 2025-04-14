@@ -36,7 +36,7 @@ export default function AdminPage() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">2,853</div>
+                <div className="text-2xl font-bold">5</div>
                 <p className="text-xs text-muted-foreground">+18% from last month</p>
               </CardContent>
             </Card>
@@ -46,7 +46,7 @@ export default function AdminPage() {
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">7,429</div>
+                <div className="text-2xl font-bold">10</div>
                 <p className="text-xs text-muted-foreground">+32% from last month</p>
               </CardContent>
             </Card>
@@ -56,7 +56,7 @@ export default function AdminPage() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">24</div>
+                <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">-4% from last week</p>
               </CardContent>
             </Card>
@@ -66,7 +66,7 @@ export default function AdminPage() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">573</div>
+                <div className="text-2xl font-bold">2</div>
                 <p className="text-xs text-muted-foreground">+12% from yesterday</p>
               </CardContent>
             </Card>
@@ -304,43 +304,43 @@ export default function AdminPage() {
 const users = [
   {
     id: 1,
-    name: "Sarah Johnson",
-    email: "sarah.j@example.com",
+    name: "Admin User",
+    email: "admin@cookbook.com",
     role: "Admin",
     status: "Active",
-    joined: "Jan 12, 2023",
+    joined: "April 13, 2025",
   },
   {
     id: 2,
-    name: "Michael Chen",
-    email: "michael.c@example.com",
+    name: "Chef Maria",
+    email: "chef@cookbook.com",
     role: "User",
-    status: "Active",
-    joined: "Mar 4, 2023",
+    status: "Inactive",
+    joined: "April 13, 2025",
   },
   {
     id: 3,
-    name: "Emma Wilson",
+    name: "John Smith",
     email: "emma.w@example.com",
-    role: "Editor",
-    status: "Active",
-    joined: "Feb 18, 2023",
+    role: "User",
+    status: "Inactive",
+    joined: "April 13, 2025",
   },
   {
     id: 4,
-    name: "James Rodriguez",
-    email: "james.r@example.com",
+    name: "Anshi",
+    email: "anshi@gmail.com",
     role: "User",
     status: "Inactive",
-    joined: "Apr 22, 2023",
+    joined: "April 13, 2025",
   },
   {
     id: 5,
-    name: "Olivia Taylor",
-    email: "olivia.t@example.com",
+    name: "Shaurya",
+    email: "shauryarohiet@gmail.com",
     role: "User",
     status: "Active",
-    joined: "May 9, 2023",
+    joined: "April 14, 2025",
   },
 ]
 

@@ -18,19 +18,10 @@ export default function AboutPage() {
             culinary creations with a community of like-minded individuals.
           </p>
 
-          <h2>Our Mission</h2>
           <p>
             Our mission is to make cooking more accessible, enjoyable, and social. We believe that good food brings
             people together, and we're committed to building a platform that celebrates the joy of cooking and sharing
             meals.
-          </p>
-
-          <h2>What We Offer</h2>
-          <p>
-            CookBook provides a comprehensive set of tools for managing your recipes, discovering new dishes, and
-            connecting with other food enthusiasts. From detailed recipe pages with step-by-step instructions to
-            personalized collections and community features, we've designed every aspect of CookBook to enhance your
-            culinary journey.
           </p>
         </div>
 
